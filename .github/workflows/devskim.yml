@@ -21,10 +21,17 @@ jobs:
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@v1
         with:
-          # File SARIF akan dibuat otomatis
-          output: devskim-results.sarif.json
+          directory: .                 # scan seluruh repo
+          output: devskim-results.sarif
+
+      - name: Verify DevSkim output exists
+        run: |
+          if [ ! -f devskim-results.sarif ]; then
+            echo "DevSkim did not generate SARIF file!"
+            exit 1
+          fi
 
       - name: Upload DevSkim results to Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: devskim-results.sarif.json
+          sarif_file: devskim-results.sarif
